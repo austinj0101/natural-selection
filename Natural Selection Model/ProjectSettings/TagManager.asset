@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Food
+  - Team1
+  - Team2
+  - Spawn1
+  - Spawn2
   layers:
   - Default
   - TransparentFX
