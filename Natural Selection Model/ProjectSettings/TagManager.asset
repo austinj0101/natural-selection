@@ -9,6 +9,8 @@ TagManager:
   - Team2
   - Spawn1
   - Spawn2
+  - SpawnReds
+  - SpawnBlues
   layers:
   - Default
   - TransparentFX

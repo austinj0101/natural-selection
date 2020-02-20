@@ -4,55 +4,112 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour {
 
-	public GameObject[] TeamOne;
-	public GameObject[] foods;
+	//public GameObject[] TeamOne;
+	public List<GameObject> TeamOne = new List<GameObject>();
+	public List<GameObject> TeamTwo = new List<GameObject>();
+	public List<GameObject> AllBots = new List<GameObject>();
+	public List<GameObject> foodList = new List<GameObject>();
+	public List<GameObject> activeFood = new List<GameObject>();
 	public GameObject food;
-	bool[] AllBack;
+	//bool[] AllBack;
 	private BotController botscript;
-	private bool ButtonPressed = false;
+	public bool ButtonPressed = false;
 
 	public void ButtonAction()
 	{
 		ButtonPressed = true;
+		foreach (GameObject x in foodList)
+		{
+			x.GetComponent<FoodController>().StartFood();
+		}
+		FindBots();
+		foreach (GameObject x in AllBots)
+		{
+			if (x != null)
+			{
+				Debug.Log(x);
+				x.GetComponent<BotController>().StartRound();
+			}
+		}
 	}
 
+	public void FindBots()
+	{
+		GameObject[] bots1 = GameObject.FindGameObjectsWithTag("Team1");
+		GameObject[] bots2 = GameObject.FindGameObjectsWithTag("Team2");
+		foreach (GameObject bot in bots1)
+		{
+			AllBots.Add(bot);
+		}
+		foreach (GameObject bot in bots2)
+		{
+			AllBots.Add(bot);
+		}
+	}
 
 	// Use this for initialization
-	void Start () 
+	public void Start () 
 	{
-		TeamOne = GameObject.FindGameObjectsWithTag("Team1");
-		foods = GameObject.FindGameObjectsWithTag("Food");
-		Debug.Log(TeamOne);
+		ButtonPressed = false;
+		foodList.Clear();
+		foreach (GameObject x in GameObject.FindGameObjectsWithTag("Food"))
+		{
+			foodList.Add(x);
+		}
+		AllBots.Clear();
+		foreach (GameObject x in GameObject.FindGameObjectsWithTag("Team1"))
+		{
+			AllBots.Add(x);
+		}
+		foreach (GameObject x in GameObject.FindGameObjectsWithTag("Team2"))
+		{
+			AllBots.Add(x);
+		}
+		TeamOne.Clear();
+		TeamTwo.Clear();
+		activeFood.Clear();
+		foreach (GameObject x in AllBots)
+		{
+			if (x.tag == "Team1")
+			{
+				TeamOne.Add(gameObject);
+			}
+			else if (x.tag == "Team2")
+			{
+				TeamTwo.Add(gameObject);
+			}
+		}
+		foreach (GameObject y in foodList)
+		{
+			activeFood.Add(y);
+		}
+		AllDone();
+		//food.SetActive(true);
+		//TeamOne = GameObject.FindGameObjectsWithTag("Team1");
+		//foods = GameObject.FindGameObjectsWithTag("Food");
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	void Update ()
 	{
-		if (ButtonPressed == true)
+		if (AllDone() == true)
 		{
-			for (int i = 0; i < TeamOne.Length; i++)
-			{
-				TeamOne[i].GetComponent<BotController>().StartRound();
-			}
-			food.GetComponent<FoodController>().StartFood();
 			ButtonPressed = false;
-			for (int i = 0; i < foods.Length; i++)
-			{
-				foods[i].GetComponent<FoodController>().StartFood();
-			}
-
 		}
 		AllDone();
-		TeamOne = GameObject.FindGameObjectsWithTag("Team1");
+		//TeamOne = GameObject.FindGameObjectsWithTag("Team1");
 	}
 
-	private bool AllDone()
+	public bool AllDone()
 	{
-		for (int i = 0; i < TeamOne.Length; i++)
+		foreach (GameObject x in AllBots)
 		{
-			if (TeamOne[i].GetComponent<BotController>().isBack == true)
+			if (x != null)
 			{
-				return true;
+				if (x.GetComponent<BotController>().isBack == true)
+				{
+					return true;
+				}
 			}
 		}
 		return false;
